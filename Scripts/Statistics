@@ -1,0 +1,38 @@
+# Calculate EVENT RATES
+
+import pandas as pd
+import os
+
+# -----BASELINE-----
+
+# Cargar archivos
+input_path = './Results/VF/Baseline/1629_VF_Baseline.csv'
+df = pd.read_csv(input_path)
+
+# Quitar espacios en los nombres de columnas
+df.columns = df.columns.str.strip()
+
+# Contar cuántas veces aparece cada 'Cell Name'
+counts = df["Cell Name"].value_counts()
+
+# Calcular event rate (dividido por EL TIME PERIOD)
+event_rate = counts / 180
+
+# Crear columna 'Event Rate (Hz)'
+df["Event Rate (Hz)"] = df["Cell Name"].map(event_rate)
+
+# Mostrar estadísticas solo en la primera fila por celda
+first_row_mask = df["Cell Name"] != df["Cell Name"].shift()
+cols_to_filter = ["Event Rate (Hz)"]
+df[cols_to_filter] = df[cols_to_filter].where(first_row_mask)
+
+# Crear carpeta donde guardar los resultados
+notebook_dir = os.path.dirname(os.path.abspath(__file__)) if '__file__' in globals() else os.getcwd()
+output_dir = os.path.join(notebook_dir, "./Results/VF/Baseline")
+os.makedirs(output_dir, exist_ok=True)
+
+# Sobrescribir el archivo original
+df.to_csv(
+    os.path.join(output_dir, "1629_VF_Baseline.csv"),
+    index=False
+)
