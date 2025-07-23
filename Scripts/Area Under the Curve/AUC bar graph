@@ -1,0 +1,58 @@
+# AUC bar graph
+
+import pandas as pd
+import plotly.graph_objects as go
+
+# Create DataFrame (MEAN first bar)
+df_plot = pd.concat([
+    pd.DataFrame([{'Cell Name': 'MEAN', 'AUC': mean_auc_total}]),
+    df_result[['Cell Name', 'AUC']]
+], ignore_index=True)
+
+# Split the DataFrame in two
+df_mean = df_plot[df_plot['Cell Name'] == 'MEAN']
+df_others = df_plot[df_plot['Cell Name'] != 'MEAN']
+
+fig = go.Figure()
+
+# Customize bars
+fig.add_trace(go.Bar(
+    x=df_others['Cell Name'],
+    y=df_others['AUC'],
+    marker_color='orange',
+    name='Cells',
+    text=[""] * len(df_others),  # without text
+))
+
+# MEAN bar
+fig.add_trace(go.Bar(
+    x=df_mean['Cell Name'],
+    y=df_mean['AUC'],
+    marker_color='blue',
+    name='MEAN',
+    text=[f"{df_mean['AUC'].values[0]:.2f}"],
+    textfont=dict(family='Arial Black', size=20, color='white'),
+    textangle=-90    
+))
+
+# Layout
+fig.update_layout(
+    xaxis=dict(
+        categoryorder='array',
+        categoryarray=['MEAN'] + df_others['Cell Name'].tolist()
+    ),
+    bargap=0.1,
+    title='Area Under the Curve per cell - Baseline (VF)',
+    xaxis_title='Cell #',
+    yaxis_title='AUC',
+    xaxis_tickangle=-45,
+    plot_bgcolor='lightblue',
+    paper_bgcolor='white',
+    font=dict(color='black'),
+    showlegend=False
+)
+
+fig.show()
+
+# Export graph in 'html' format
+fig.write_html('./AUC_Graph_XXXX.html')
