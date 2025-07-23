@@ -1,6 +1,6 @@
 # Calcium imaging data analysis pipeline
 <p align="center">
-  <img width="207" height="560" alt="Logo github" src="https://github.com/user-attachments/assets/aafd6625-c32f-4c29-ad3d-0a850e27ce5a" />
+  <img width="207" height="560" alt="Logo github_contorno blanco" src="https://github.com/user-attachments/assets/3db553d2-70ce-4293-9615-1e3fbb88950c" />
 </p>
 
 Scripts (Python language) to analyze in vivo Ca2+ imaging data acquired through a one-photon miniscope set onto freely moving mice 🐁
