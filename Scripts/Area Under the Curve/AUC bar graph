@@ -1,13 +1,22 @@
-# AUC bar graph
+# AUC bar graph showing the mean and the AUC of each cell individually
 
 import pandas as pd
 import plotly.graph_objects as go
 
-# Create DataFrame (MEAN first bar)
+# IF YOU HAVE RUN THE SCRIPT "AUC calculation" BEFORE, THEN DELETE THE STEP B FROM THIS SCRIPT
+# IF YOU HAVE NOT RUN THE SCRIPT "AUC calculation" BEFORE, THEN DELETE THE STEP A FROM THIS SCRIPT
+
+# STEP A
+# Create DataFrame
 df_plot = pd.concat([
     pd.DataFrame([{'Cell Name': 'MEAN', 'AUC': mean_auc_total}]),
-    df_result[['Cell Name', 'AUC']]
+    df_result[['Cell Name', 'AUC']] # INDICATE THE NAME 
 ], ignore_index=True)
+
+# STEP B
+# Load csv - INDICATE THE NAME OF THE FILE
+file = r'./XXXX.csv'
+df_Plot = pd.read_csv(file)
 
 # Split the DataFrame in two
 df_mean = df_plot[df_plot['Cell Name'] == 'MEAN']
