@@ -4,7 +4,9 @@
 </p>
 
 Scripts (Python language) to analyze in vivo Ca2+ imaging data acquired through a one-photon miniscope set onto freely moving mice 🐁
-
+-----------------------------
 📝[Scripts/Raster plot Ca2+ events](https://github.com/SandraSSB/Ca2_Imaging_Data_Analysis/blob/main/Scripts/Raster%20plot%20Ca2%2B%20events)
+-----------------------------
 📝
+-----------------------------
 📝
