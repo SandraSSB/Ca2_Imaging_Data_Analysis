@@ -33,7 +33,7 @@ for idx, (cell_id, times) in enumerate(eventtimes.items()):
         ))
 
 # Axis configuration
-pixels_por_celda = 12 # 10 is the default value
+pixels_by_cell = 12 # 10 is the default value
 fig.update_layout(
     xaxis_title='Time (s)',
     yaxis_title='Cell #',
@@ -52,7 +52,7 @@ fig.update_layout(
         ticktext=cell_names,
         range=[-1, len(cell_names) * space]        
     ),
-    height=pixels_por_celda * len(cell_names),
+    height=pixels_by_cell * len(cell_names),
     width=1000,
     plot_bgcolor='black', # graph background color
     paper_bgcolor='black', # outside graph background color
