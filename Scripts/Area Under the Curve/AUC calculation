@@ -1,0 +1,64 @@
+# AUC calculation from specific time window
+
+import pandas as pd
+import numpy as np
+import os
+
+# Load csv - INDICATE THE NAME OF THE FILE
+file = r'./XXXX.csv'
+df = pd.read_csv(file)
+
+# Remove empty spaces in the title of columns
+df.columns = df.columns.str.strip()
+
+# Time range
+start = 60
+end = 240
+
+# Filter rows by time range
+df_filtered = df[(df['Time(s)'] >= start) & (df['Time(s)'] <= end)]
+
+results = []
+auc_values = []
+cell_names = []
+means = []
+stds = []
+
+for col in df_filtered.columns:
+    if col != 'Time(s)':
+        values = df_filtered[col].values
+        times = df_filtered['Time(s)'].values
+
+        mean_val = np.mean(values)
+        std_val = np.std(values)
+        auc_val = np.trapezoid(values, times)        
+
+        # Save results
+        cell_names.append(col)
+        means.append(mean_val)
+        stds.append(std_val)        
+        auc_values.append(auc_val)        
+
+# Mean AUC total
+mean_auc_total = np.mean(auc_values)
+
+# Create final DataFrame
+df_result = pd.DataFrame({
+    'Cell Name': cell_names,
+    'Mean Z-score value': means,
+    'Std': stds,    
+    'AUC': auc_values,
+    'Std AUC (per cell)': [0.0] * len(auc_values),
+    'Mean AUC Total': [mean_auc_total] + [None] * (len(auc_values) - 1)
+})
+
+# Create folder to save results - INDICATE FOLDER NAME
+notebook_dir = os.path.dirname(os.path.abspath(__file__)) if '__file__' in globals() else os.getcwd()
+output_dir = os.path.join(notebook_dir, "Results/XXXX")
+os.makedirs(output_dir, exist_ok=True)
+
+# Save csv - INDICATE FILE NAME
+output_file = os.path.join(output_dir, "XXXX.csv")
+df_result.to_csv(output_file, index=False)
+
+print('✅ SAVED')
