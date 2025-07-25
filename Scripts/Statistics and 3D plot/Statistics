@@ -1,0 +1,105 @@
+# Calculate different statistics (mean, median, standard deviation, skewness, coefficient of variation, mean amplitude)
+
+import pandas as pd
+import numpy as np
+from scipy.stats import skew
+import os
+
+#  Load csv - INDICATE THE NAME OF THE FILE
+df = pd.read_csv("XXXX.csv")
+
+# Remove empty spaces in the title of columns
+df.columns = df.columns.str.strip()
+
+# Sort by Cell Name and Time
+df = df.sort_values(by=["Cell Name", "Time (s)"]).reset_index(drop=True)
+
+# Calculate Inter-Event Intervals (IEIs)
+df["Interval (s)"] = df.groupby("Cell Name")["Time (s)"].diff()
+
+# New columns
+cells = []
+means = []
+medians = []
+stds = []
+skews = []
+cvs = []
+mean_values = []
+
+# Calculate statistics
+for name, group in df.groupby("Cell Name"):
+    intervals = group["Interval (s)"].dropna()
+    values = group["Value"].dropna()
+    
+    mean = np.mean(intervals)
+    median = np.median(intervals)
+    std = np.std(intervals, ddof=1)
+    cv = std / mean if mean != 0 else np.nan
+    skewness = skew(intervals, bias=False) if len(intervals) > 2 else np.nan
+    mean_val = np.mean(values)
+    
+    cells.append(name)
+    means.append(mean)
+    medians.append(median)
+    stds.append(std)
+    skews.append(skewness)
+    cvs.append(cv)
+    mean_values.append(mean_val)
+
+# Create DataFrame with all the statistics
+group_stats = pd.DataFrame({
+    "Cell Name": cells,
+    "Mean Interval (s)": means,
+    "Median Interval (s)": medians,
+    "std": stds,
+    "Skewness": skews,
+    "Coefficient of Variation": cvs,
+    "Mean Amplitude": mean_values
+})
+
+# Merge with the first DataFrame
+df = df.merge(group_stats, on="Cell Name", how="left")
+
+# Show statistics in the first row of each cell only
+first_row_mask = df["Cell Name"] != df["Cell Name"].shift()
+cols_to_filter = ["Event Rate (Hz)", "Mean Interval (s)", "Median Interval (s)", "std", "Skewness", "Coefficient of Variation", "Mean Amplitude"]
+df[cols_to_filter] = df[cols_to_filter].where(first_row_mask)
+
+# Add column 'Event Rate (Hz)' to the Summary file
+event_rates = df.drop_duplicates(subset="Cell Name")[["Cell Name", "Event Rate (Hz)"]]
+group_stats = group_stats.merge(event_rates, on="Cell Name", how="left")
+
+# Add AUC for each cell to the Summary file
+# Load AUC csv - INDICATE THE NAME OF THE FILE
+auc_df = pd.read_csv("./XXXX.csv")
+# Remove empty spaces in the title of columns
+group_stats.columns = group_stats.columns.str.strip()
+auc_df.columns = auc_df.columns.str.strip()
+# Remove empty spaces inside the column 'Cell Name'
+group_stats["Cell Name"] = group_stats["Cell Name"].str.strip()
+auc_df["Cell Name"] = auc_df["Cell Name"].str.strip()
+# Merge all the AUCs with group_stats
+group_stats = group_stats.merge(auc_df[["Cell Name", "AUC"]], on="Cell Name", how="left")
+# Add 'mean_AUC' column to the Summary file
+mean_auc_value = auc_df.loc[0, "Mean AUC Total"] if "Mean AUC Total" in auc_df.columns else np.nan
+group_stats["mean_AUC"] = np.nan
+group_stats.loc[0, "mean_AUC"] = mean_auc_value
+
+
+
+# Create a folder to save the results
+notebook_dir = os.path.dirname(os.path.abspath(__file__)) if '__file__' in globals() else os.getcwd()
+output_dir = os.path.join(notebook_dir, "./XXXX") # INDICATE THE NAME OF THE FOLDER
+os.makedirs(output_dir, exist_ok=True)
+
+df.to_excel(
+    os.path.join(output_dir, "XXXX_Statistics.xlsx"),
+    index=False
+)
+
+group_stats.to_excel(
+    os.path.join(output_dir, "XXXX_Summary.xlsx"),
+    index=False
+)
+
+print("✅ SAVED")
