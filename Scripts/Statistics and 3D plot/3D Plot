@@ -1,0 +1,43 @@
+# 3D Plot representing cells distribution based on (up to) 4 parameters
+
+import plotly.express as px
+
+# Load excel Summary
+df = pd.read_excel("XXXX.xlsx")
+
+# Remove empty spaces in the title of columns
+df.columns = df.columns.str.strip()
+
+# Create scatter plot 3D
+fig = px.scatter_3d(
+    df.assign(dummy_color='All'),
+    x="Event Rate (Hz)", # select the parameters that you want to
+    y="AUC",
+    z="Mean Amplitude",
+        color="dummy_color",
+    hover_name="Cell Name",
+    title="Neural Population - Baseline",
+    labels={
+        "Event Rate (Hz)": "Event Rate",
+        "AUC": "AUC",
+        "Mean Amplitude": "Mean Z-score"
+    },
+    color_discrete_sequence=["royalblue"]
+)
+
+# Adjust axis and size
+fig.update_layout(
+    #scene=dict(
+        #yaxis=dict(range=[0, 10]),
+        #zaxis=dict(range=[0, 20])
+    #),
+    width=900,
+    height=700
+)
+
+fig.show()
+
+# Export graph in 'html' format
+fig.write_html('./3DPlot_XXX.html')
+
+print("✅ Graph done!")
