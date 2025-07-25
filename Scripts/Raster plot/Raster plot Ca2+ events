@@ -5,8 +5,7 @@ import numpy as np
 import plotly.graph_objects as go
 
 # Load csv - INDICATE THE NAME OF THE FILE
-input_path = './XXXX.csv'
-df = pd.read_csv(input_path)
+df = pd.read_csv("XXXX.csv")
 
 # Remove empty spaces in the title of columns
 df.columns = df.columns.str.strip()
