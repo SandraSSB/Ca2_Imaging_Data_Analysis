@@ -64,3 +64,5 @@ fig.show()
 
 # Export graph in 'html' format
 fig.write_html('./AUC_Graph_XXXX.html')
+
+print("✅ Graph done!")
