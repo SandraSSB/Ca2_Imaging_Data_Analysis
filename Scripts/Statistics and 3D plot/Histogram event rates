@@ -59,3 +59,5 @@ fig.show()
 
 # Export graph in 'html' format
 fig.write_html('./RasterPlot_XXX.html')
+
+print("✅ Graph done!")
