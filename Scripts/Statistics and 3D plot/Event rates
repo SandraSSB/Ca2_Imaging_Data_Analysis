@@ -1,0 +1,35 @@
+import pandas as pd
+import os
+
+# -----BASELINE-----
+
+#  Load csv - INDICATE THE NAME OF THE FILE
+df = pd.read_csv("XXXX.csv")
+
+# Remove empty spaces in the title of columns
+df.columns = df.columns.str.strip()
+
+# Quantify cells
+counts = df["Cell Name"].value_counts()
+
+# Calculate event rate (INDICATE THE TIME PERIOD)
+event_rate = counts / 180
+df["Event Rate (Hz)"] = df["Cell Name"].map(event_rate)
+
+# Show calculations in the first row by cell
+first_row_mask = df["Cell Name"] != df["Cell Name"].shift()
+cols_to_filter = ["Event Rate (Hz)"]
+df[cols_to_filter] = df[cols_to_filter].where(first_row_mask)
+
+# Creat folder to save the results
+notebook_dir = os.path.dirname(os.path.abspath(__file__)) if '__file__' in globals() else os.getcwd()
+output_dir = os.path.join(notebook_dir, "./Results")
+os.makedirs(output_dir, exist_ok=True)
+
+# Name the results file
+df.to_csv(
+    os.path.join(output_dir, "XXXX.csv"),
+    index=False
+)
+
+print("✅ SAVED")
