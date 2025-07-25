@@ -1,7 +1,7 @@
+# Calculation of event rates
+
 import pandas as pd
 import os
-
-# -----BASELINE-----
 
 #  Load csv - INDICATE THE NAME OF THE FILE
 df = pd.read_csv("XXXX.csv")
