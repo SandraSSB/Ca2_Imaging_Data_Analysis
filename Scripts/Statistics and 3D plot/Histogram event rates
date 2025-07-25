@@ -57,5 +57,5 @@ fig.update_layout(
 
 fig.show()
 
-# Exportar grafico como html para abrir en cualquier navegador y que sea interactivo
-fig.write_html('./Results/VF/Baseline/Histogram_events_VF_Baseline.html')
+# Export graph in 'html' format
+fig.write_html('./RasterPlot_XXX.html')
