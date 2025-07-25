@@ -15,8 +15,7 @@ df_plot = pd.concat([
 
 # STEP B
 # Load csv - INDICATE THE NAME OF THE FILE
-file = r'./XXXX.csv'
-df_Plot = pd.read_csv(file)
+df_Plot = pd.read_csv("XXXX.csv")
 
 # Split the DataFrame in two
 df_mean = df_plot[df_plot['Cell Name'] == 'MEAN']
