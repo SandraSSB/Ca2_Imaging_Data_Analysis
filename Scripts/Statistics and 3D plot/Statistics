@@ -5,7 +5,7 @@ import numpy as np
 from scipy.stats import skew
 import os
 
-#  Load csv - INDICATE THE NAME OF THE FILE
+#  Load csv containing the event rates obtained from previous steps - INDICATE THE NAME OF THE FILE
 df = pd.read_csv("XXXX.csv")
 
 # Remove empty spaces in the title of columns
