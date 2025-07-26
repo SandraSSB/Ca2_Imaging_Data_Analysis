@@ -1,0 +1,63 @@
+# Representing the event rates in a histogram
+
+import pandas as pd
+import numpy as np
+import plotly.express as px
+import plotly.graph_objects as go
+
+#  Load csv - INDICATE THE NAME OF THE FILE
+df = pd.read_csv("XXXX.csv")
+
+# Remove empty spaces in the title of columns
+df.columns = df.columns.str.strip()
+
+# List the cell names
+cell_names = sorted(df["Cell Name"].unique())
+
+# Calculate total time
+total_duration = df["Time (s)"].max() - df["Time (s)"].min()
+
+# Calculate event rates
+rates = []
+for cell_name in cell_names:
+    num_events = (df["Cell Name"] == cell_name).sum()
+    rate = num_events / total_duration if total_duration > 0 else 0
+    rates.append(rate)
+
+# Create histogram
+fig = px.histogram(
+    x=rates,
+    nbins=9,
+    title="Event Rates histogram",
+    labels={"x": "Event rate (Hz)", "y": "Number of cells"},
+    color_discrete_sequence=["blue"]
+)
+
+fig.update_traces(
+    texttemplate='%{y}',  # texto = valor del eje Y
+    textposition='outside',
+    marker=dict(color=['#636EFA', '#EF553B', '#00CC96', '#AB63FA', "#FFA25A",
+                      '#19D3F3', '#FF6692', '#B6E880', '#FF97FF']), # Add more colors in case you have more than 9 bins
+)
+
+fig.update_layout(
+    yaxis=dict(
+        range=[0, 55],
+        color='white',
+        showgrid=False, # remove horizontal background lines
+        title='Number of cells'
+    ), 
+    xaxis=dict(color='white'),
+    plot_bgcolor='black',
+    paper_bgcolor='black',
+    font=dict(color='white'),
+    title_font=dict(color='white'),
+    bargap=0.1
+)
+
+fig.show()
+
+# Export graph in 'html' format
+fig.write_html('./HistogramER_XXX.html')
+
+print("✅ Graph done!")
